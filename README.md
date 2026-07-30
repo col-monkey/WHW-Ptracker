@@ -60,6 +60,22 @@ npm run build
 npm run preview
 ```
 
+## About dependency installation in CI
+
+The workflow uses `npm install` rather than `npm ci`, and doesn't use
+dependency caching. That's because both of those need a `package-lock.json`
+committed to the repo, and this project doesn't ship one (it was put
+together somewhere without npm registry access, so there was no way to
+generate a real one).
+
+This works fine as-is - GitHub Actions has full network access and will
+resolve fresh versions on every run - just slightly slower and less
+strictly reproducible than a locked install. If you want the faster/cached,
+version-pinned version later: run `npm install` locally once (which
+generates `package-lock.json`), commit that file, then change the workflow's
+"Install dependencies" step back to `npm ci` and add `cache: npm` to the
+"Set up Node" step.
+
 ## About the storage
 
 `src/WHWTracker.jsx` is the component as built in Claude, unchanged, which
